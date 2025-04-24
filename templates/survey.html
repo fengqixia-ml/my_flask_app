@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Comment Adoption Survey</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Comment Adoption Survey</h1>
+        <p>Thank you for participating in this survey! We are researchers from Wuhan University of Technology, working on regulating online comment behavior and promoting internet civilization. Please read the following 5 groups of original comments, revised comments, and their persuasive reasons. After comparing the revised comments with the original ones, answer the related questions.</p>
+
+        <form method="POST" required>
+            <!-- Student ID Input -->
+            <div class="form-group">
+                <label>Please enter your student ID (enter 0 if not available):</label>
+                <input type="text" name="student_id" required>
+            </div>
+
+            <!-- Dynamically Generate 5 Question Groups -->
+            {% for group in groups %}
+            {% set current_group_index = loop.index %}
+            <div class="question-group">
+                <h3>Group {{ current_group_index }} Questions</h3>
+                <p class="original-comment">"{{ group.stg1_post_post }}"</p>
+
+                <!-- Sub-question 1: Automatic Revised Comment + Reason (Single Choice) -->
+                <div class="sub-question">
+                    <h4>Revised Comment (Automatic):</h4>
+                    <p>{{ group.Revised_Comments_of_Auto_DS }}</p>
+                    <p>Modification Reason: {{ group.Revised_Comments_Reason_of_Auto_DS }}</p>
+
+                    <label>Is it effective in reducing offensiveness?</label>
+                    <div required>
+                        {% for opt in opts_offensive %}
+                        <input type="radio" name="group_{{ current_group_index }}_q1_offensive" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+
+                    <label>Is the persuasive reason convincing?</label>
+                    <div required>
+                        {% for opt in opts_persuasive %}
+                        <input type="radio" name="group_{{ current_group_index }}_q1_persuasive" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+
+                    <label>Would you be willing to adopt or share this comment?</label>
+                    <div required>
+                        {% for opt in opts_willing %}
+                        <input type="radio" name="group_{{ current_group_index }}_q1_willing" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Sub-question 2: Manual Prompt Revised Comment + Reason (Single Choice) -->
+                <div class="sub-question">
+                    <h4>Revised Comment (Manual Prompt):</h4>
+                    <p>{{ group.Prompted_Revised_Comment_of_Manual_DS }}</p>
+                    <p>Modification Reason: {{ group.Prompted_Revised_Comment_Reason_of_Manual_DS }}</p>
+
+                    <label>Is it effective in reducing offensiveness?</label>
+                    <div required>
+                        {% for opt in opts_offensive %}
+                        <input type="radio" name="group_{{ current_group_index }}_q2_offensive" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+
+                    <label>Is the persuasive reason convincing?</label>
+                    <div required>
+                        {% for opt in opts_persuasive %}
+                        <input type="radio" name="group_{{ current_group_index }}_q2_persuasive" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+
+                    <label>Would you be willing to adopt or share this comment?</label>
+                    <div required>
+                        {% for opt in opts_willing %}
+                        <input type="radio" name="group_{{ current_group_index }}_q2_willing" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Sub-question 3: Only Automatic Revised Comment (Meaning Judgment) (Single Choice) -->
+                <div class="sub-question">
+                    <h4>Revised Comment (Automatic):</h4>
+                    <p>{{ group.Revised_Comments_of_Auto_DS }}</p>
+
+                    <label>Does it change the original comment's meaning?</label>
+                    <div required>
+                        {% for opt in opts_meaning %}
+                        <input type="radio" name="group_{{ current_group_index }}_q3_meaning" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+
+                    <label>Is it effective in reducing offensiveness?</label>
+                    <div required>
+                        {% for opt in opts_offensive %}
+                        <input type="radio" name="group_{{ current_group_index }}_q3_offensive" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+
+                    <label>Would you be willing to adopt or share this comment?</label>
+                    <div required>
+                        {% for opt in opts_willing %}
+                        <input type="radio" name="group_{{ current_group_index }}_q3_willing" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Sub-question 4: Only Manual Prompt Revised Comment (Meaning Change Judgment) (Single Choice) -->
+                <div class="sub-question">
+                    <h4>Revised Comment (Manual Prompt):</h4>
+                    <p>{{ group.Prompted_Revised_Comment_of_Manual_DS }}</p>
+
+                    <label>Does it change the original comment's meaning?</label>
+                    <div required>
+                        {% for opt in opts_meaning %}
+                        <input type="radio" name="group_{{ current_group_index }}_q4_meaning" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+
+                    <label>Is it effective in reducing offensiveness?</label>
+                    <div required>
+                        {% for opt in opts_offensive %}
+                        <input type="radio" name="group_{{ current_group_index }}_q4_offensive" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+
+                    <label>Would you be willing to adopt or share this comment?</label>
+                    <div required>
+                        {% for opt in opts_willing %}
+                        <input type="radio" name="group_{{ current_group_index }}_q4_willing" value="{{ opt }}" required> {{ opt }}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Age and Gender (Single Choice) -->
+            <div class="form-group">
+                <h3>Personal Information</h3>
+                <label>Age:</label>
+                <div required>
+                    {% for opt in ["Under 18", "18-25", "26-35", "36-45", "46-55", "56+"] %}
+                    <input type="radio" name="age" value="{{ opt }}"> {{ opt }}
+                    {% endfor %}
+                </div>
+
+                <label>Gender:</label>
+                <div required>
+                    {% for opt in ["Male", "Female"] %}
+                    <input type="radio" name="gender" value="{{ opt }}"> {{ opt }}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Survey</button>
+        </form>
+    </div>
+</body>
+
+</html>
